@@ -1,5 +1,6 @@
 const express = require('express');
 const expresshbs = require('express-handlebars');
+const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -18,6 +19,10 @@ const Idea = mongoose.model('ideas');
 app.engine('handlebars', expresshbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
+// body parser middleware
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
+
 // define index route
 app.get('/', (request, response) => {
   const title = 'Welcome';
@@ -32,6 +37,29 @@ app.get('/about', (request, response) => {
 // define idea form
 app.get('/ideas/add', (request, response) => {
   response.render('ideas/add');
+});
+
+// define idea processing
+app.post('/ideas', (request, response) => {
+  let errors = [];
+
+  if (!request.body.title) {
+    errors.push({ text: 'Please add a title.' });
+  }
+
+  if (!request.body.details) {
+    errors.push({ text: 'Please enter some details.' });
+  }
+
+  if (errors.length > 0) {
+    response.render('ideas/add', {
+      errors: errors,
+      title: request.body.title,
+      details: request.body.details
+    });
+  } else {
+    response.send('Success: No Form Errors');
+  }
 });
 
 app.listen(port, () => {
