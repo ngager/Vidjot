@@ -39,6 +39,15 @@ app.get('/ideas/add', (request, response) => {
   response.render('ideas/add');
 });
 
+// idea index page
+app.get('/ideas', (request, response) => {
+  Idea.find({})
+  .sort({date: 'desc'})
+    .then(ideas => {
+      response.render('ideas/index', { ideas: ideas });
+    });
+});
+
 // define idea processing
 app.post('/ideas', (request, response) => {
   let errors = [];
@@ -58,7 +67,15 @@ app.post('/ideas', (request, response) => {
       details: request.body.details
     });
   } else {
-    response.send('Success: No Form Errors');
+    const newUser = {
+      title: request.body.title,
+      details: request.body.details
+    };
+    new Idea(newUser)
+      .save()
+      .then(idea => {
+        response.redirect('/ideas');
+      });
   }
 });
 
