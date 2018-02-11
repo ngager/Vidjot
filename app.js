@@ -2,6 +2,7 @@ const express = require('express');
 const expresshbs = require('express-handlebars');
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 
 const app = express();
 const port = 5000;
@@ -23,26 +24,37 @@ app.set('view engine', 'handlebars');
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
-// define index route
-app.get('/', (request, response) => {
-  const title = 'Welcome';
-  response.render('index', { title: title });
-});
+// method override middleware
+app.use(methodOverride('_method'));
 
 // define about route
 app.get('/about', (request, response) => {
   response.render('about');
 });
 
-// define idea form
+// define index route
+app.get('/', (request, response) => {
+  const title = 'Welcome';
+  response.render('index', { title: title });
+});
+
+// define idea add form
 app.get('/ideas/add', (request, response) => {
   response.render('ideas/add');
+});
+
+// define idea edit form
+app.get('/ideas/edit/:id', (request, response) => {
+  Idea.findOne({ _id: request.params.id })
+    .then(idea => {
+      response.render('ideas/edit', { idea: idea });
+    });
 });
 
 // idea index page
 app.get('/ideas', (request, response) => {
   Idea.find({})
-  .sort({date: 'desc'})
+    .sort({ date: 'desc' })
     .then(ideas => {
       response.render('ideas/index', { ideas: ideas });
     });
@@ -77,6 +89,21 @@ app.post('/ideas', (request, response) => {
         response.redirect('/ideas');
       });
   }
+});
+
+// edit form process
+app.put('/ideas/:id', (request, response) => {
+  Idea.findOne({
+    _id: request.params.id
+  })
+  .then(idea => {
+    idea.title = request.body.title;
+    idea.details = request.body.details;
+    idea.save()
+      .then(idea => {
+        response.redirect('/ideas');
+      });
+  });
 });
 
 app.listen(port, () => {
