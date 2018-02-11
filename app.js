@@ -91,19 +91,25 @@ app.post('/ideas', (request, response) => {
   }
 });
 
-// edit form process
+// edit idea
 app.put('/ideas/:id', (request, response) => {
-  Idea.findOne({
-    _id: request.params.id
-  })
-  .then(idea => {
-    idea.title = request.body.title;
-    idea.details = request.body.details;
-    idea.save()
-      .then(idea => {
-        response.redirect('/ideas');
-      });
-  });
+  Idea.findOne({ _id: request.params.id })
+    .then(idea => {
+      idea.title = request.body.title;
+      idea.details = request.body.details;
+      idea.save()
+        .then(idea => {
+          response.redirect('/ideas');
+        });
+    });
+});
+
+// delete idea
+app.delete('/ideas/:id', (request, response) => {
+  Idea.remove({ _id: request.params.id })
+    .then(() => {
+      response.redirect('/ideas');
+    });
 });
 
 app.listen(port, () => {
