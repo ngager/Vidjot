@@ -80,7 +80,7 @@ app.get('/ideas', (request, response) => {
     });
 });
 
-// define idea processing
+// add new idea
 app.post('/ideas', (request, response) => {
   let errors = [];
 
@@ -106,6 +106,7 @@ app.post('/ideas', (request, response) => {
     new Idea(newUser)
       .save()
       .then(idea => {
+        request.flash('success_msg', 'Video idea successfully added.');
         response.redirect('/ideas');
       });
   }
@@ -119,6 +120,7 @@ app.put('/ideas/:id', (request, response) => {
       idea.details = request.body.details;
       idea.save()
         .then(idea => {
+          request.flash('success_msg', 'Video idea successfully updated.');
           response.redirect('/ideas');
         });
     });
@@ -128,6 +130,7 @@ app.put('/ideas/:id', (request, response) => {
 app.delete('/ideas/:id', (request, response) => {
   Idea.remove({ _id: request.params.id })
     .then(() => {
+      request.flash('success_msg', 'Video idea successfully removed.');
       response.redirect('/ideas');
     });
 });
