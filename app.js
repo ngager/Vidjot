@@ -3,21 +3,14 @@ const expresshbs = require('express-handlebars');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const methodOverride = require('method-override');
-
 
 const app = express();
 const port = 5000;
 
-// connect to mongoose
-mongoose.connect('mongodb://localhost/vidjot-dev')
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
-
-// load idea model
-require('./models/Idea');
-const Idea = mongoose.model('ideas');
+// load routes
+const ideas = require('./routes/ideas');
+const users = require('./routes/users');
 
 // handlebars middleware
 app.engine('handlebars', expresshbs({ defaultLayout: 'main' }));
@@ -58,82 +51,8 @@ app.get('/', (request, response) => {
   response.render('index', { title: title });
 });
 
-// define idea add form
-app.get('/ideas/add', (request, response) => {
-  response.render('ideas/add');
-});
-
-// define idea edit form
-app.get('/ideas/edit/:id', (request, response) => {
-  Idea.findOne({ _id: request.params.id })
-    .then(idea => {
-      response.render('ideas/edit', { idea: idea });
-    });
-});
-
-// idea index page
-app.get('/ideas', (request, response) => {
-  Idea.find({})
-    .sort({ date: 'desc' })
-    .then(ideas => {
-      response.render('ideas/index', { ideas: ideas });
-    });
-});
-
-// add new idea
-app.post('/ideas', (request, response) => {
-  let errors = [];
-
-  if (!request.body.title) {
-    errors.push({ text: 'Please add a title.' });
-  }
-
-  if (!request.body.details) {
-    errors.push({ text: 'Please enter some details.' });
-  }
-
-  if (errors.length > 0) {
-    response.render('ideas/add', {
-      errors: errors,
-      title: request.body.title,
-      details: request.body.details
-    });
-  } else {
-    const newUser = {
-      title: request.body.title,
-      details: request.body.details
-    };
-    new Idea(newUser)
-      .save()
-      .then(idea => {
-        request.flash('success_msg', 'Video idea successfully added.');
-        response.redirect('/ideas');
-      });
-  }
-});
-
-// edit idea
-app.put('/ideas/:id', (request, response) => {
-  Idea.findOne({ _id: request.params.id })
-    .then(idea => {
-      idea.title = request.body.title;
-      idea.details = request.body.details;
-      idea.save()
-        .then(idea => {
-          request.flash('success_msg', 'Video idea successfully updated.');
-          response.redirect('/ideas');
-        });
-    });
-});
-
-// delete idea
-app.delete('/ideas/:id', (request, response) => {
-  Idea.remove({ _id: request.params.id })
-    .then(() => {
-      request.flash('success_msg', 'Video idea successfully removed.');
-      response.redirect('/ideas');
-    });
-});
+app.use('/ideas', ideas);
+app.use('/users', users);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
