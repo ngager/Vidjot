@@ -6,10 +6,10 @@ module.exports = router;
 
 // user login
 router.get('/login', (request, response) => {
-  response.send('LOGIN');
+  response.render('users/login');
 });
 
 // user registration
 router.get('/register', (request, response) => {
-  response.send('REGISTER');
+  response.render('users/register');
 });
