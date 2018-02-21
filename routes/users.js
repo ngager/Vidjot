@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
-module.exports = router;
+require('../models/User');
+const User = mongoose.model('users');
 
 // user login
 router.get('/login', (request, response) => {
@@ -19,7 +21,7 @@ router.post('/register', (request, response) => {
   let errors = [];
 
   if (request.body.password != request.body.passwordConfirmation) {
-    errors.push({ text: 'Passwords do not match.'});
+    errors.push({ text: 'Passwords do not match.' });
   }
 
   if (request.body.password.length < 4) {
@@ -35,7 +37,43 @@ router.post('/register', (request, response) => {
       passwordConfirmation: request.body.passwordConfirmation
     });
   } else {
-    response.send('PASS');
-  }
+    User.findOne({ email: request.body.email })
+      .then(user => {
+        console.log(user);
 
+        if (user) {
+          console.log('email registered');
+          request.flash('error_msg', 'Email already registered.');
+          response.redirect('/users/register');
+        } else {
+          let newUser = new User({
+            name: request.body.name,
+            email: request.body.email,
+            password: request.body.password
+          });
+
+          // hash the password
+          bcrypt.genSalt(10, (error, salt) => {
+            bcrypt.hash(newUser.password, salt, (error, hash) => {
+              if (error) {
+                throw error;
+              }
+
+              newUser.password = hash;
+              newUser.save()
+                .then(newUser => {
+                  request.flash('success_msg', 'You are now registered and can login.');
+                  response.redirect('/users/login');
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            });
+          });
+        }
+      }
+    );
+  }
 });
+
+module.exports = router;
