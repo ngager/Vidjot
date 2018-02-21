@@ -66,8 +66,8 @@ router.post('/register', (request, response) => {
                   response.redirect('/users/login');
                 })
                 .catch(error => {
-                  console.log(error);
-                });
+                  request.flash('success_msg', 'An error has occurred. Please try again.');
+                  response.redirect('/users/register');                });
             });
           });
         }
