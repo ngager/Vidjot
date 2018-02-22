@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 require('../models/User');
 const User = mongoose.model('users');
@@ -14,6 +15,15 @@ router.get('/login', (request, response) => {
 // user registration route
 router.get('/register', (request, response) => {
   response.render('users/register');
+});
+
+// login form POST
+router.post('/login', (request, response, next) => {
+  passport.authenticate('local', {
+    successRedirect: '/ideas',
+    failureRedirect: '/users/login',
+    failureFlash: true
+  })(request, response, next);
 });
 
 // user registration form POST
@@ -66,7 +76,7 @@ router.post('/register', (request, response) => {
                   response.redirect('/users/login');
                 })
                 .catch(error => {
-                  request.flash('success_msg', 'An error has occurred. Please try again.');
+                  request.flash('error_msg', 'An error has occurred. Please try again.');
                   response.redirect('/users/register');                });
             });
           });

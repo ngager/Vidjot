@@ -4,6 +4,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const passport = require('passport');
 const path = require('path');
 
 const app = express();
@@ -12,6 +13,9 @@ const port = 5000;
 // load routes
 const ideas = require('./routes/ideas');
 const users = require('./routes/users');
+
+// passport configuration
+require('./config/passport')(passport);
 
 // handlebars middleware
 app.engine('handlebars', expresshbs({ defaultLayout: 'main' }));
