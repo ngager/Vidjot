@@ -38,6 +38,10 @@ app.use(session({
   saveUninitialized: true
 }));
 
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 
 // global variables
@@ -45,6 +49,7 @@ app.use((request, response, next) => {
   response.locals.success_msg = request.flash('success_msg');
   response.locals.error_msg = request.flash('error_msg');
   response.locals.error = request.flash('error');
+  response.locals.user = request.user || null;
   next();
 });
 
