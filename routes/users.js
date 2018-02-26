@@ -12,6 +12,13 @@ router.get('/login', (request, response) => {
   response.render('users/login');
 });
 
+// user logout
+router.get('/logout', (request, response) => {
+  request.logout();
+  request.flash('success_msg', 'You are logged out');
+  response.redirect('/users/login');
+});
+
 // user registration route
 router.get('/register', (request, response) => {
   response.render('users/register');
