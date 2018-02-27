@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const {ensureAuthenticated} = require('../helpers/auth');
 
 // load idea model
 require('../models/Idea');
@@ -12,7 +13,7 @@ mongoose.connect('mongodb://localhost/vidjot-dev')
   .catch(err => console.log(err));
 
 // idea index page
-router.get('/', (request, response) => {
+router.get('/', ensureAuthenticated, (request, response) => {
   Idea.find({})
     .sort({ date: 'desc' })
     .then(ideas => {
@@ -21,12 +22,12 @@ router.get('/', (request, response) => {
 });
 
 // add idea form
-router.get('/add', (request, response) => {
+router.get('/add', ensureAuthenticated, (request, response) => {
   response.render('ideas/add');
 });
 
 // edit idea form
-router.get('/edit/:id', (request, response) => {
+router.get('/edit/:id', ensureAuthenticated, (request, response) => {
   Idea.findOne({ _id: request.params.id })
     .then(idea => {
       response.render('ideas/edit', { idea: idea });
@@ -34,7 +35,7 @@ router.get('/edit/:id', (request, response) => {
 });
 
 // add new idea
-router.post('/', (request, response) => {
+router.post('/', ensureAuthenticated, (request, response) => {
   let errors = [];
 
   if (!request.body.title) {
@@ -66,7 +67,7 @@ router.post('/', (request, response) => {
 });
 
 // edit idea
-router.put('/:id', (request, response) => {
+router.put('/:id', ensureAuthenticated, (request, response) => {
   Idea.findOne({ _id: request.params.id })
     .then(idea => {
       idea.title = request.body.title;
