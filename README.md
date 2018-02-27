@@ -16,3 +16,14 @@ Nodemon is a utility that acts as a live server and allows any changes made in a
 $ npm install
 $ nodemon
 ```
+
+### Deploying to Heroku
+
+#### Add A Start Script
+Add a start script to package.json so that Heroku can run ```npm start```
+
+```
+"scripts": {
+    "start": "node app.js"
+  }
+```
