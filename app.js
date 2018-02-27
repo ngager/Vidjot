@@ -8,7 +8,7 @@ const passport = require('passport');
 const path = require('path');
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // load routes
 const ideas = require('./routes/ideas');
@@ -16,6 +16,15 @@ const users = require('./routes/users');
 
 // passport configuration
 require('./config/passport')(passport);
+
+// db config
+const db = require('./config/database');
+
+// connect to mongoose
+mongoose.connect(db.mongoURI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
+
 
 // handlebars middleware
 app.engine('handlebars', expresshbs({ defaultLayout: 'main' }));
