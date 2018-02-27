@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const passport = require('passport');
 const path = require('path');
+const mongoose = require('mongoose');
+
 
 const app = express();
 const port = process.env.PORT || 5000;
