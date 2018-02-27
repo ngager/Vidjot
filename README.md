@@ -25,5 +25,12 @@ Add a start script to package.json so that Heroku can run ```npm start```
 ```
 "scripts": {
     "start": "node app.js"
-  }
+}
 ```
+
+#### Modify Port
+Heroku decides what port to use, whereas when running locally we can use port 5000. Because of this the port in ```app.js``` needs to be modified to pick up the assigned port from Heroku.
+```
+const port = process.env.PORT || 5000;
+```
+
