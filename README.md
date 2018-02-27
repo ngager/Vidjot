@@ -34,3 +34,8 @@ Heroku decides what port to use, whereas when running locally we can use port 50
 const port = process.env.PORT || 5000;
 ```
 
+#### mLab
+Add a deployment creator using mLab and connect using a driver via the standard MongoDB URI that is provided
+```
+mongodb://<dbuser>:<dbpassword>@ds231725.mlab.com:31725/vidjot-prod
+```
