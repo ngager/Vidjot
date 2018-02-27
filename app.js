@@ -21,7 +21,7 @@ require('./config/passport')(passport);
 
 // db config
 const db = require('./config/database');
-
+console.log(db.mongoURI);
 // connect to mongoose
 mongoose.connect(db.mongoURI)
   .then(() => console.log('MongoDB connected'))
