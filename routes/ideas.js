@@ -14,7 +14,7 @@ mongoose.connect('mongodb://localhost/vidjot-dev')
 
 // idea index page
 router.get('/', ensureAuthenticated, (request, response) => {
-  Idea.find({})
+  Idea.find({ user: request.user.id })
     .sort({ date: 'desc' })
     .then(ideas => {
       response.render('ideas/index', { ideas: ideas });
@@ -30,7 +30,12 @@ router.get('/add', ensureAuthenticated, (request, response) => {
 router.get('/edit/:id', ensureAuthenticated, (request, response) => {
   Idea.findOne({ _id: request.params.id })
     .then(idea => {
-      response.render('ideas/edit', { idea: idea });
+      if (idea.user != request.user.id) {
+        request.flash('error_msg', 'Not authorized');
+        response.redirect('/ideas');
+      } else {
+        response.render('ideas/edit', { idea: idea });
+      }
     });
 });
 
@@ -55,7 +60,8 @@ router.post('/', ensureAuthenticated, (request, response) => {
   } else {
     const newUser = {
       title: request.body.title,
-      details: request.body.details
+      details: request.body.details,
+      user: request.user.id
     };
     new Idea(newUser)
       .save()
