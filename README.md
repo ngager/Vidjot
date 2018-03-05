@@ -3,9 +3,10 @@
 Vidjot is a small Node/Express application for saving video ideas to user accounts via Passport authentication.
 
 ![welcome](https://github.com/ngager/Vidjot/blob/master/public/img/vidjot.png)
+
 <p align="center">
-    <img src="https://github.com/ngager/Vidjot/blob/master/public/img/vidjot-login.png" width="400" height="345"/>
-    <img src="https://github.com/ngager/Vidjot/blob/master/public/img/vidjot-ideas.png" width="400" height="345"/>
+    <img src="https://github.com/ngager/Vidjot/blob/master/public/img/vidjot-login.png" width="400"/>
+    <img src="https://github.com/ngager/Vidjot/blob/master/public/img/vidjot-ideas.png" width="400"/>
 </p>
 
 ### Running Code
