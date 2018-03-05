@@ -1,5 +1,7 @@
 # Vidjot
 
+Vidjot is a small Node/Express application for saving video ideas.
+
 ### Running Code
 To run this application, clone the repository then run the commands below in the main directory. Once finished, open a up browser and navigate to ``` localhost:5000 ```
 
